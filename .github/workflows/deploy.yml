@@ -38,7 +38,7 @@ jobs:
       - name: Add .nojekyll
         run: touch output_dir/.nojekyll
 
-      # Upload for GitHub Pages
+      # Upload for GitHub Pages.
       - name: 📦 Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
