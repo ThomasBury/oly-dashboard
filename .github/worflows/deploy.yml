@@ -1,0 +1,64 @@
+name: 📦 Deploy Marimo App to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build & Export
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repo
+      - uses: actions/checkout@v4
+
+      # Install uv, because it's the best and Marimo uses it to manage Python environments
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      # Set up Python environment
+      - name: Set up Python
+        run: uv python install
+
+      # Install your project (dev & extras if needed)
+      - name: Install dependencies
+        run: uv sync --locked
+
+      # Export your notebook/app to a self-contained WASM-powered HTML
+      - name: Export Marimo notebook
+        run: |
+          mkdir -p output_dir
+          marimo export html-wasm dashboard.py \
+            -o output_dir \
+            --mode run
+
+      # Prevent Jekyll from ignoring files that start with underscores, cfr Marimo's documentation
+      - name: Add .nojekyll
+        run: touch output_dir/.nojekyll
+
+      # Upload for GitHub Pages
+      - name: 📦 Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: output_dir
+
+  deploy:
+    name: 🌐 Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
