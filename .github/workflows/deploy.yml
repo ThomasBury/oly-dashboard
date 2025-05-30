@@ -30,7 +30,7 @@ jobs:
       - name: Export Marimo notebook
         run: |
           mkdir -p output_dir
-          marimo export html-wasm dashboard.py \
+          uv run marimo export html-wasm dashboard.py \
             -o output_dir \
             --mode run
 
