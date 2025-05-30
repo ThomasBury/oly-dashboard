@@ -1,9 +1,9 @@
-,date,lift_name,weight_kg,bodyweight_kg,self_evaluated_shape,sinclair_points,spread_pct,personal_best_kg,lift_bodyweight_ratio,context
-1,2024-01-15 00:00:00,Clean & Jerk,100,75,4,132.62,25,100,133,training
-3,2024-02-20 00:00:00,Clean & Jerk,105,76,5,138.16,24,105,138,competition
-5,2024-03-10 00:00:00,Clean & Jerk,102.5,76.5,3,134.36,24,105,134,competition
-7,2024-04-05 00:00:00,Clean & Jerk,107,77,4,139.73,23,107,139,competition
-0,2024-01-15 00:00:00,Snatch,80,75,4,106.09,25,80,107,training
-2,2024-02-20 00:00:00,Snatch,85,76,5,111.85,24,85,112,competition
-4,2024-03-10 00:00:00,Snatch,82.5,76.5,3,108.14,24,85,108,competition
-6,2024-04-05 00:00:00,Snatch,87,77,4,113.61,23,87,113,competition
+,date,lift_name,weight_kg,bodyweight_kg,self_evaluated_shape,context
+1,2024-01-15,Clean & Jerk,100,75,4,training
+3,2024-02-20,Clean & Jerk,105,76,5,competition
+5,2024-03-10,Clean & Jerk,102.5,76.5,3,competition
+7,2024-04-05,Clean & Jerk,107,77,4,competition
+0,2024-01-15,Snatch,80,75,4,training
+2,2024-02-20,Snatch,85,76,5,competition
+4,2024-03-10,Snatch,82.5,76.5,3,competition
+6,2024-04-05,Snatch,87,77,4,competition
