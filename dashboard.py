@@ -70,6 +70,20 @@ def _(a_coeff, b_coeff, csv_file):
 
     # Function to load the uploaded file into a Pandas DataFrame
     def load_csv_to_dataframe(file_data):
+        """Load an uploaded CSV file into a Pandas DataFrame.
+
+        Parameters
+        ----------
+        file_data : marimo.ui.FileUIElement
+            The file UI element from Marimo, containing the uploaded CSV data.
+            It's expected that `file_data.value[0].contents` yields the
+            byte string of the CSV content.
+
+        Returns
+        -------
+        pd.DataFrame
+            A Pandas DataFrame created from the content of the uploaded CSV file.
+        """
         content_bytes = file_data.value[0].contents
         content_string = io.StringIO(content_bytes.decode("utf-8"))
         df = pd.read_csv(content_string)
@@ -81,6 +95,30 @@ def _(a_coeff, b_coeff, csv_file):
         coeff_a: float,
         coeff_b: float,
     ) -> float | None:
+        """Calculate Sinclair points for a weightlifting total.
+
+        The Sinclair coefficient is calculated based on bodyweight relative
+        to a coefficient 'B'. If bodyweight is greater than 'B', the
+        Sinclair coefficient is 1.0.
+
+        Parameters
+        ----------
+        total_weight_lifted : float
+            The total weight lifted by the athlete in kilograms.
+        bodyweight : float
+            The athlete's bodyweight in kilograms.
+        coeff_a : float
+            The 'A' coefficient for Sinclair calculation, specific to gender.
+        coeff_b : float
+            The 'B' coefficient (bodyweight cap) for Sinclair calculation.
+
+        Returns
+        -------
+        float or None
+            The calculated Sinclair points, rounded to two decimal places.
+            Returns None if `total_weight_lifted` or `bodyweight` is NaN,
+            or if `bodyweight` is non-positive, or if the ratio for log is non-positive.
+        """
         if pd.isna(total_weight_lifted) or pd.isna(bodyweight) or bodyweight <= 0:
             return None
         if bodyweight <= coeff_b:
@@ -93,17 +131,22 @@ def _(a_coeff, b_coeff, csv_file):
         return round(total_weight_lifted * sinclair_coefficient, 2)
 
     def add_snatch_cj_spread_pct(df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Adds a 'snatch_cj_spread_pct' column to the DataFrame, representing the spread
-        between Clean & Jerk and Snatch as a percentage of Snatch over time,
+        """Add Clean & Jerk vs. Snatch spread percentage column.
+
+        Calculates the spread between Clean & Jerk and Snatch as a percentage
+        of Snatch weight. This is added as a 'spread_pct' column.
         using linear interpolation for missing values on the same date.
 
-        Args:
-            df: Pandas DataFrame with columns 'date' (object), 'lift_name' (object), 'weight_kg' (float64).
-                It's assumed the DataFrame is not necessarily sorted by 'date'.
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Input DataFrame with 'date', 'lift_name', and 'weight_kg' columns.
+            'date' will be converted to datetime objects.
 
-        Returns:
-            Pandas DataFrame with an added 'snatch_cj_spread_pct' column.
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame with an added 'spread_pct' column, rounded to the nearest integer.
         """
         df["date"] = pd.to_datetime(df["date"])
         df = df.sort_values(by="date")
@@ -133,16 +176,20 @@ def _(a_coeff, b_coeff, csv_file):
         return merged_df
 
     def add_cumulative_personal_best(df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Adds a 'personal_best_kg' column showing the personal best weight lifted
-        for each 'lift_name' up to that date.
+        """Add cumulative personal best for each lift.
 
-        Args:
-            df: Pandas DataFrame with 'date' (object), 'lift_name' (object), and 'weight_kg' (float64) columns.
-                It's assumed the DataFrame is sorted by 'date'.
+        Calculates and adds a 'personal_best_kg' column, representing the
+        highest weight lifted for each 'lift_name' up to each recorded date.
 
-        Returns:
-            Pandas DataFrame with an added 'personal_best_kg' column.
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Input DataFrame with 'date', 'lift_name', and 'weight_kg' columns.
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame with an added 'personal_best_kg' column.
         """
         df["date"] = pd.to_datetime(df["date"])
         df = df.sort_values(by=["lift_name", "date"])
@@ -157,14 +204,20 @@ def _(a_coeff, b_coeff, csv_file):
         return df
 
     def add_lift_bodyweight_ratio(df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Adds a 'lift_bodyweight_ratio' column to the DataFrame, calculated as weight_kg / bodyweight_kg.
+        """Add lift-to-bodyweight ratio column.
 
-        Args:
-            df: Pandas DataFrame with 'weight_kg' (float64) and 'bodyweight_kg' (float64) columns.
+        Calculates the ratio of 'weight_kg' to 'bodyweight_kg', expressed as a
+        percentage, and adds it as 'lift_bodyweight_ratio'.
 
-        Returns:
-            Pandas DataFrame with an added 'lift_bodyweight_ratio' column.
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Input DataFrame with 'weight_kg' and 'bodyweight_kg' columns.
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame with an added 'lift_bodyweight_ratio' column, rounded to the nearest integer.
         """
         df["lift_bodyweight_ratio"] = round(100 * df["weight_kg"] / df["bodyweight_kg"])
         return df
@@ -221,7 +274,20 @@ def _(pd):
     import plotly.graph_objects as go
 
     def create_temporal_weight_chart(df: pd.DataFrame) -> go.Figure:
-        """Generates a line chart of weight lifted over time."""
+        """Create a line chart of weight lifted over time.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame containing the data to plot. Expected columns are
+            'date', 'weight_kg', and 'lift_name'.
+
+        Returns
+        -------
+        go.Figure
+            A Plotly graph object figure showing weight lifted over time,
+            colored by lift name.
+        """
         return px.line(
             df,
             x="date",
@@ -234,7 +300,20 @@ def _(pd):
         )
 
     def create_temporal_sinclair_chart(df: pd.DataFrame) -> go.Figure:
-        """Generates a line chart of Sinclair points over time."""
+        """Create a line chart of Sinclair points over time.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame containing the data to plot. Expected columns are
+            'date', 'sinclair_points', and 'lift_name'.
+
+        Returns
+        -------
+        go.Figure
+            A Plotly graph object figure showing Sinclair points over time,
+            colored by lift name.
+        """
         return px.line(
             df,
             x="date",
@@ -247,8 +326,22 @@ def _(pd):
         )
 
     def create_snatch_cj_spread_chart(df: pd.DataFrame) -> go.Figure:
-        """Generates a line chart of Clean & Jerk - Snatch spread over time."""
-        # Filter for Clean & Jerk rows, as 'spread_pct' is relevant here
+        """Create a line chart of Clean & Jerk vs. Snatch spread over time.
+
+        The spread is shown as a percentage of Snatch weight.
+        This chart filters for 'Clean & Jerk' lift names as 'spread_pct'
+        is primarily associated with it.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame containing the data. Expected columns: 'date', 'lift_name', 'spread_pct'.
+
+        Returns
+        -------
+        go.Figure
+            A Plotly graph object figure showing the C&J - Snatch spread percentage.
+        """
         spread_df = df[df["lift_name"] == "Clean & Jerk"].dropna(subset=["spread_pct"])
         return px.line(
             spread_df,
@@ -261,7 +354,19 @@ def _(pd):
         )
 
     def create_lift_bodyweight_ratio_chart(df: pd.DataFrame) -> go.Figure:
-        """Generates a line chart of Lift / Bodyweight Ratio over time."""
+        """Create a line chart of lift to bodyweight ratio over time.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame containing the data. Expected columns: 'date',
+            'lift_bodyweight_ratio', 'lift_name'.
+
+        Returns
+        -------
+        go.Figure
+            A Plotly graph object figure showing the lift/bodyweight ratio, colored by lift name.
+        """
         return px.line(
             df,
             x="date",
@@ -277,10 +382,21 @@ def _(pd):
         )
 
     def create_self_evaluated_shape_chart(df: pd.DataFrame) -> go.Figure:
-        """Generates a line chart of self-evaluated shape over time."""
-        # Group by date and take the mean of self_evaluated_shape if multiple entries per day
-        # Or you might want to show all points for self_evaluated_shape if it's per session
-        # For now, let's assume one shape per date or take the average for simplicity
+        """Create a line chart of self-evaluated physical shape over time.
+
+        If multiple shape evaluations exist for the same date, their mean
+        is plotted. The Y-axis is fixed from 1 to 5.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame containing the data. Expected columns: 'date', 'self_evaluated_shape'.
+
+        Returns
+        -------
+        go.Figure
+            A Plotly graph object figure showing self-evaluated shape over time.
+        """
         shape_data = df.groupby("date")["self_evaluated_shape"].mean().reset_index()
         return px.line(
             shape_data,
@@ -294,7 +410,20 @@ def _(pd):
         )
 
     def create_bodyweight_chart(df: pd.DataFrame) -> go.Figure:
-        """Generates a line chart of Bodyweight over time."""
+        """Create a line chart of bodyweight over time.
+
+        Duplicate bodyweight entries for the same date are removed before plotting.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame containing the data. Expected columns: 'date', 'bodyweight_kg'.
+
+        Returns
+        -------
+        go.Figure
+            A Plotly graph object figure showing bodyweight over time.
+        """
         dum = df.copy()
         dum = dum[["date", "bodyweight_kg"]].drop_duplicates().sort_values(by="date")
         return px.line(
