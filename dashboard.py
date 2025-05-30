@@ -7,6 +7,7 @@ app = marimo.App(width="medium")
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 
@@ -67,14 +68,12 @@ def _(a_coeff, b_coeff, csv_file):
     import math
     import pandas as pd
 
-
     # Function to load the uploaded file into a Pandas DataFrame
     def load_csv_to_dataframe(file_data):
         content_bytes = file_data.value[0].contents
         content_string = io.StringIO(content_bytes.decode("utf-8"))
         df = pd.read_csv(content_string)
         return df
-
 
     def calculate_sinclair_points(
         total_weight_lifted: float,
@@ -92,7 +91,6 @@ def _(a_coeff, b_coeff, csv_file):
         else:
             sinclair_coefficient = 1.0
         return round(total_weight_lifted * sinclair_coefficient, 2)
-
 
     def add_snatch_cj_spread_pct(df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -113,9 +111,7 @@ def _(a_coeff, b_coeff, csv_file):
             df = df.drop(columns=["spread_pct"])
 
         # Pivot the table to have Snatch and Clean & Jerk weights side by side
-        pivot_df = df.pivot_table(
-            index="date", columns="lift_name", values="weight_kg"
-        )
+        pivot_df = df.pivot_table(index="date", columns="lift_name", values="weight_kg")
 
         # Interpolate missing values
         interpolated_df = pivot_df.interpolate(method="linear")
@@ -135,7 +131,6 @@ def _(a_coeff, b_coeff, csv_file):
         )
 
         return merged_df
-
 
     def add_cumulative_personal_best(df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -161,7 +156,6 @@ def _(a_coeff, b_coeff, csv_file):
 
         return df
 
-
     def add_lift_bodyweight_ratio(df: pd.DataFrame) -> pd.DataFrame:
         """
         Adds a 'lift_bodyweight_ratio' column to the DataFrame, calculated as weight_kg / bodyweight_kg.
@@ -172,11 +166,8 @@ def _(a_coeff, b_coeff, csv_file):
         Returns:
             Pandas DataFrame with an added 'lift_bodyweight_ratio' column.
         """
-        df["lift_bodyweight_ratio"] = round(
-            100 * df["weight_kg"] / df["bodyweight_kg"]
-        )
+        df["lift_bodyweight_ratio"] = round(100 * df["weight_kg"] / df["bodyweight_kg"])
         return df
-
 
     # Load the DataFrame whenever a file is uploaded
     data_df = load_csv_to_dataframe(csv_file)
@@ -229,7 +220,6 @@ def _(pd):
     import plotly.express as px
     import plotly.graph_objects as go
 
-
     def create_temporal_weight_chart(df: pd.DataFrame) -> go.Figure:
         """Generates a line chart of weight lifted over time."""
         return px.line(
@@ -242,7 +232,6 @@ def _(pd):
             markers=True,
             template="plotly_white",
         )
-
 
     def create_temporal_sinclair_chart(df: pd.DataFrame) -> go.Figure:
         """Generates a line chart of Sinclair points over time."""
@@ -257,13 +246,10 @@ def _(pd):
             template="plotly_white",
         )
 
-
     def create_snatch_cj_spread_chart(df: pd.DataFrame) -> go.Figure:
         """Generates a line chart of Clean & Jerk - Snatch spread over time."""
         # Filter for Clean & Jerk rows, as 'spread_pct' is relevant here
-        spread_df = df[df["lift_name"] == "Clean & Jerk"].dropna(
-            subset=["spread_pct"]
-        )
+        spread_df = df[df["lift_name"] == "Clean & Jerk"].dropna(subset=["spread_pct"])
         return px.line(
             spread_df,
             x="date",
@@ -273,7 +259,6 @@ def _(pd):
             markers=True,
             template="plotly_white",
         )
-
 
     def create_lift_bodyweight_ratio_chart(df: pd.DataFrame) -> go.Figure:
         """Generates a line chart of Lift / Bodyweight Ratio over time."""
@@ -291,15 +276,12 @@ def _(pd):
             template="plotly_white",
         )
 
-
     def create_self_evaluated_shape_chart(df: pd.DataFrame) -> go.Figure:
         """Generates a line chart of self-evaluated shape over time."""
         # Group by date and take the mean of self_evaluated_shape if multiple entries per day
         # Or you might want to show all points for self_evaluated_shape if it's per session
         # For now, let's assume one shape per date or take the average for simplicity
-        shape_data = (
-            df.groupby("date")["self_evaluated_shape"].mean().reset_index()
-        )
+        shape_data = df.groupby("date")["self_evaluated_shape"].mean().reset_index()
         return px.line(
             shape_data,
             x="date",
@@ -311,13 +293,10 @@ def _(pd):
             range_y=[1, 5],  # Ensure y-axis is fixed for shape rating
         )
 
-
     def create_bodyweight_chart(df: pd.DataFrame) -> go.Figure:
         """Generates a line chart of Bodyweight over time."""
         dum = df.copy()
-        dum = (
-            dum[["date", "bodyweight_kg"]].drop_duplicates().sort_values(by="date")
-        )
+        dum = dum[["date", "bodyweight_kg"]].drop_duplicates().sort_values(by="date")
         return px.line(
             dum,
             x="date",
@@ -326,6 +305,7 @@ def _(pd):
             markers=True,
             template="plotly_white",
         )
+
     return (
         create_bodyweight_chart,
         create_lift_bodyweight_ratio_chart,
