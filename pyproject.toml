@@ -6,4 +6,6 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "marimo[recommended]>=0.13.15",
+    "pandas>=2.2.3",
+    "plotly>=6.1.2",
 ]
