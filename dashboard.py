@@ -288,16 +288,49 @@ def _(pd):
             A Plotly graph object figure showing weight lifted over time,
             colored by lift name.
         """
-        return px.line(
+        fig = px.line(
             df,
             x="date",
             y="weight_kg",
+            text="weight_kg",
             color="lift_name",
             title="Weight Lifted Over Time (kg)",
-            labels={"weight_kg": "Weight (kg)", "lift_name": "Lift"},
+            labels={"weight_kg": "Weight (kg)", "lift_name": "Lift", "personal_best_kg": "Personal Best (kg)"},
             markers=True,
             template="plotly_white",
         )
+        fig.update_traces(textposition="top center", textfont_size=14)
+
+        # Add personal best lines
+        if not df.empty and 'lift_name' in df.columns and 'personal_best_kg' in df.columns:
+            # Iterate through the traces already created by px.line for the main lift weights
+            # Each trace corresponds to a unique lift_name
+            processed_lifts = set() # To handle cases where px might duplicate for some reason (unlikely for color)
+            
+            # Iterate over a copy of fig.data list as we might be modifying the figure
+            for trace in list(fig.data): 
+                lift_name = trace.name
+                if lift_name in processed_lifts or lift_name is None:
+                    continue
+                
+                lift_color = trace.line.color
+
+                # Filter data for this specific lift to get PB data
+                # Ensure data is sorted by date for correct staircase plotting
+                lift_df = df[df["lift_name"] == lift_name].sort_values(by="date")
+
+                if not lift_df.empty:
+                    fig.add_trace(go.Scatter(
+                        x=lift_df["date"],
+                        y=lift_df["personal_best_kg"],
+                        mode='lines',
+                        line=dict(color=lift_color, dash='dash', shape='hv', width=.75),
+                        name=f'{lift_name} PB',
+                        legendgroup=lift_name, # Group PB with its main lift in legend
+                        showlegend=True 
+                    ))
+                    processed_lifts.add(lift_name)
+        return fig
 
     def create_temporal_sinclair_chart(df: pd.DataFrame) -> go.Figure:
         """Create a line chart of Sinclair points over time.
