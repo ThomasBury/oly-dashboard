@@ -444,6 +444,15 @@ def _(pd):
         create_temporal_weight_chart,
     )
 
+@app.cell
+def _(mo):
+    mo.md(
+        r"""
+    ## 3. Choose a chart to display
+    The chart will update automatically based on your selection.
+    """
+    )
+    return
 
 @app.cell
 def _(
@@ -456,7 +465,7 @@ def _(
     data_df,
     mo,
 ):
-    tabs_content = {
+    chart_dict = {
         "Temporal Evolution (Bodyweight)": create_bodyweight_chart(data_df),
         "Temporal Evolution (Lift kg)": create_temporal_weight_chart(data_df),
         "Temporal Evolution (Sinclair)": create_temporal_sinclair_chart(data_df),
@@ -464,9 +473,21 @@ def _(
         "Lift / Bodyweight Ratio": create_lift_bodyweight_ratio_chart(data_df),
         "Self-Evaluated Shape": create_self_evaluated_shape_chart(data_df),
     }
-    mo.ui.tabs(tabs_content)
-    return
+    chart_selector = mo.ui.dropdown(
+        options=chart_dict,
+        label="choose a chart",
+        searchable=True,
+    )
+    chart_selector
+    return chart_selector
 
+
+@app.cell
+def _(
+    chart_selector
+):
+    chart_selector.value
+    return
 
 if __name__ == "__main__":
     app.run()
