@@ -73,3 +73,42 @@ Et voilà:
 ![](./dashboard.png)
 
 Enjoy analyzing your progress!
+
+---
+
+## Competition Dashboard: How to Use and Contribute Data
+
+The **Competition Dashboard** provides a way to visualize and analyze competition results for all club members, using data from a shared Google Sheet. This dashboard is separate from your personal training dashboard and is designed for tracking official or mock meet results across multiple athletes.
+
+### How to Use the Competition Dashboard
+
+1. **Access the Dashboard:**
+   * Open the `competition_dashboard` (either via the Marimo app, or the published GitHub Pages site).
+   * The dashboard automatically loads data from the published Google Sheet. You do not need to upload a file.
+
+2. **Explore the Visualizations:**
+   * The dashboard displays charts and tables summarizing competition results, Sinclair points, personal bests, and more for all athletes listed in the sheet.
+   * You can filter or select athletes, lifts, or competitions as provided by the dashboard controls.
+
+3. **Stay Updated:**
+   * The dashboard will refresh its data each time it is loaded, reflecting any new results added to the Google Sheet.
+
+### How to Add Data to the Published Google Sheet
+
+To contribute new competition results for yourself or other club members:
+
+1. **Open the Google Sheet:**
+   * Use the link provided by your club or dashboard admin to access the shared Google Sheet. (If you do not have access, request it from the admin.)
+
+2. **Follow the Required Format:**
+   * Each row should represent a single athlete's result in a single competition. Use the format defined in the Google Sheet. Don't change the default.
+3. **Best Practices:**
+   * **Do not change column names** or reorder columns unless instructed by the admin.
+   * **Use the correct date format** (YYYY-MM-DD).
+   * **Use a period (`.`) as the decimal separator** for all weights.
+   * **Double-check your entries** for typos, especially names and numbers.
+   * **Do not delete or overwrite other athletes' data.**
+   * If you are unsure about a value, leave the cell blank or add a comment.
+
+4. **Save and Close:**
+   * Your changes are saved automatically in Google Sheets. The dashboard will reflect your updates the next time it is loaded.
