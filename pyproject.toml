@@ -9,3 +9,9 @@ dependencies = [
     "pandas>=2.2.3",
     "plotly>=6.1.2",
 ]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.29.5",
+    "jupyter>=1.1.1",
+]
