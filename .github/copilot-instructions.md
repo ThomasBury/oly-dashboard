@@ -1,0 +1,1 @@
+Use Context7 for current documentation when discussing frameworks, libraries, or APIs
