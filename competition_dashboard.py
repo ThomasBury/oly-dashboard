@@ -22,14 +22,54 @@ def _(mo):
     return
 
 
+# @app.cell
+# def _():
+#     import pandas as pd
+#     data = pd.read_csv(
+#         "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTy21622d_G-6bZw8-ugzG9RMbLvy_0h_eyhcVtcOYLcssPygig8pPnwAimXVcvntOD8X_JdCOWdd2/pub?output=csv"
+#     )
+#     members = data["member"].unique().tolist()
+#     return (data, members, pd,)
+
 @app.cell
-def _():
-    import pandas as pd
-    data = pd.read_csv(
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTy21622d_G-6bZw8-ugzG9RMbLvy_0h_eyhcVtcOYLcssPygig8pPnwAimXVcvntOD8X_JdCOWdd2/pub?output=csv"
+def _(mo):
+    csv_file = mo.ui.file(
+        filetypes=[".csv"], kind="button", label="Upload Local CSV File"
     )
+
+    # Display the file uploader in the Marimo notebook
+    csv_file
+    return (csv_file,)
+
+@app.cell
+def _(csv_file):
+    import io
+    import pandas as pd
+
+    # Function to load the uploaded file into a Pandas DataFrame
+    def load_csv_to_dataframe(file_data):
+        """Load an uploaded CSV file into a Pandas DataFrame.
+
+        Parameters
+        ----------
+        file_data : marimo.ui.FileUIElement
+            The file UI element from Marimo, containing the uploaded CSV data.
+            It's expected that `file_data.value[0].contents` yields the
+            byte string of the CSV content.
+
+        Returns
+        -------
+        pd.DataFrame
+            A Pandas DataFrame created from the content of the uploaded CSV file.
+        """
+        content_bytes = file_data.value[0].contents
+        content_string = io.StringIO(content_bytes.decode("utf-8"))
+        df = pd.read_csv(content_string)
+        return df
+    data = load_csv_to_dataframe(csv_file)
     members = data["member"].unique().tolist()
     return (data, members, pd,)
+
 
 @app.cell
 def _(mo, members):
