@@ -25,9 +25,15 @@ def _(mo):
 @app.cell
 def _():
     import pandas as pd
-    data = pd.read_csv(
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTy21622d_G-6bZw8-ugzG9RMbLvy_0h_eyhcVtcOYLcssPygig8pPnwAimXVcvntOD8X_JdCOWdd2/pub?output=csv"
-    )
+    from pyodide.http import open_url  # Only available in Pyodide environments
+    from io import StringIO
+    
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTy21622d_G-6bZw8-ugzG9RMbLvy_0h_eyhcVtcOYLcssPygig8pPnwAimXVcvntOD8X_JdCOWdd2/pub?output=csv"
+
+    # Fetch CSV as text via Pyodide's open_url
+    csv_text = open_url(url).read()
+    data = pd.read_csv(StringIO(csv_text))
+    
     members = data["member"].unique().tolist()
     return (data, members, pd,)
 
