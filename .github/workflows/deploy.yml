@@ -32,7 +32,6 @@ jobs:
           mkdir -p output_dir
           uv run marimo export html-wasm dashboard.py -o output_dir/dashboard.html --mode run
           uv run marimo export html-wasm competition_dashboard.py -o output_dir/competition_dashboard.html --mode run
-          uv run marimo export html-wasm test_dashboard.py -o output_dir/test_dashboard.html --mode run
 
       # Prevent Jekyll from ignoring files that start with underscores, cfr Marimo's documentation
       - name: Add .nojekyll
