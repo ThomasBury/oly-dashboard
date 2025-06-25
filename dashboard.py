@@ -13,14 +13,164 @@ def _():
 
 @app.cell
 def _(mo):
-    mo.md(
-        r"""
-    # Olympic Weightlifting Statistics Dashboard
-    ## 1. Configure Sinclair Coefficients
-    """
+    header = mo.md(
+        """
+        <div style="
+            text-align: center;
+            padding: 2em 1em;
+            margin-bottom: 2em;
+        ">
+            <p style="
+                font-size: 3em; /* Larger, impactful main title */
+                font-weight: 800; /* Strong but not extreme */
+                color: #9D00FF; /* Primary color */
+                margin-bottom: 0.2em;
+                letter-spacing: -0.02em; /* Slightly tighter for modern feel */
+            ">
+                Olympic Weightlifting Dashboard
+            </p>
+            <p style="
+                font-size: 1.6em; /* Clear, readable subtitle */
+                font-weight: 500;
+                color: #7f8c8d; /* Muted secondary color */
+                letter-spacing: 0.01em;
+            ">
+                Training Dashboard
+            </p>
+        </div>
+        """
     )
+    header
     return
 
+
+
+
+
+
+@app.cell
+def _(mo):
+    
+    # Create a styled container using custom HTML + CSS
+    banner = mo.md(
+        """
+        <div style="
+            background: #fcfcfd;
+            border-left: 4px solid #9D00FF;
+            border-radius: 0.8rem;
+            padding: 1.2rem 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 12px rgba(157, 0, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        ">
+            <span style="
+                font-size: 1.3rem;
+                font-weight: 700;
+                background: linear-gradient(90deg, #9D00FF, #7D5FFF);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            ">👤 Welcome to the Olympic Weightlifting Dashboard! 👋 </span>
+
+        </div>
+        """
+    )
+    
+    google_sheet_help = mo.md(
+        """
+        <div style="
+            background: #fcfcfd;
+            border-left: 4px solid #ffc803;
+            border-radius: 0.8rem;
+            padding: 1.2rem 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 12px rgba(157, 0, 255, 0.08);
+            font-size: 1.08em;
+        ">
+            <span style="font-size: 1.25em; font-weight: 700; color:#ffc803;">
+                📋 How to Start Tracking Your Lifts
+            </span>
+            <ol style="margin-top: 1em; color: #333;">
+                <li>
+                    <b>Copy the Template:</b>
+                    <br>
+                    <a href="https://docs.google.com/spreadsheets/d/1sOvuFj0_LtxaDD6gCrLZJSfJ0HYku9xLoonkTIPCFIc/edit?gid=1543506157#gid=1543506157" target="_blank" style="color: #9D00FF; text-decoration: underline;">
+                        Open this Google Sheets template
+                    </a> and go to <b>File → Make a copy</b> to save it to your own Google Drive.
+                </li>
+                <li>
+                    <b>Enter Your Data:</b>
+                    <br>
+                    Fill in your training data (date, lift_name, weight_kg, bodyweight_kg, reps, etc.).
+                </li>
+                <li>
+                    <b>Publish as CSV:</b>
+                    <br>
+                    In your copy, go to <b>File → Share → Publish to web</b>.<br>
+                    Choose the sheet, select <b>Comma-separated values (.csv)</b>, click <b>Publish</b>, and copy the generated link.
+                </li>
+                <li>
+                    <b>Paste the URL:</b>
+                    <br>
+                    Paste your published CSV URL below. The dashboard will load and visualize your data automatically!
+                </li>
+            </ol>
+            <span style="color: #7f8c8d; font-size: 0.98em;">
+                <b>Tip:</b> Update your sheet anytime—just refresh the dashboard to see your latest results.
+            </span>
+        </div>
+        """
+    )
+    
+    
+    sample_data_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSzIvdyxe1N-FPcuOryGoWTHUSaxBUqn9iGW2M4Q5gxPdNaGpSvfWUcR_E5ZBftdUyQh3kqFR4VifL1/pub?output=csv"
+    user_url =mo.ui.text(
+        value = sample_data_url,
+        full_width=True,
+    )
+
+    # 2. Then, apply the styling to a *displayable variable*
+    #    This is what you'll put into your mo.md or other display functions
+    styled_user_url = user_url.style({
+        "border": "1px solid #9D00FF",
+        "border-radius": "5px",
+        "padding": "0.5em 1em",
+        "font-size": "1em",
+        "box-shadow": "0 2px 8px rgba(0, 0, 0, 0.05)",
+        "color": "#333",
+        "background-color": "#ffffff",
+        "transition": "all 0.2s ease-in-out",
+    })
+
+    url_message = mo.md(
+        """
+        <div style="
+            background: #fcfcfd;
+            border-left: 4px solid #9D00FF;
+            border-radius: 0.8rem;
+            padding: 1.2rem 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 12px rgba(157, 0, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        ">
+            <span style="
+                font-size: 1.3rem;
+                font-weight: 700;
+                background: linear-gradient(90deg, #9D00FF, #7D5FFF);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            ">🌐 Paste your own URL: </span>
+
+        </div>
+        """
+    )
+    
+    # Stack the banner and dropdown neatly
+    mo.vstack([banner, google_sheet_help, url_message, styled_user_url])
+    return user_url
 
 @app.cell
 def _(mo):
@@ -32,374 +182,367 @@ def _(mo):
 
 @app.cell
 def _(mo, sinclair_gender):
+    
+    sinclair_message = mo.md(
+        """
+        <div style="
+            background: #fcfcfd;
+            border-left: 4px solid #9D00FF;
+            border-radius: 0.8rem;
+            padding: 1.2rem 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 12px rgba(157, 0, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        ">
+            <span style="
+                font-size: 1.3rem;
+                font-weight: 700;
+                background: linear-gradient(90deg, #9D00FF, #7D5FFF);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            ">Choose Your Sinclair Coefficients: </span>
+
+        </div>
+        """
+    )
+    
+    sinclair_info = mo.md(
+        """
+        <div style="
+            background: #fcfcfd;
+            border-left: 4px solid #ffc803;
+            border-radius: 0.8rem;
+            padding: 1.2rem 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 12px rgba(157, 0, 255, 0.08);
+            font-size: 1.08em;
+            color: #222;
+        ">
+            <span style="font-size: 1.18em; font-weight: 700; color: #ffc803;">
+                🏅 What are Sinclair Points?
+            </span>
+            <br>
+            Sinclair Points are a way to compare Olympic weightlifting performances across different bodyweights. 
+            They use a mathematical formula to "normalize" your total, so lifters of different sizes can be compared fairly.
+            <br><br>
+            <b>Where can I find the official Sinclair coefficients?</b><br>
+            You can find the latest official Sinclair coefficients on the 
+            <a href="https://iwf.sport/weightlifting_/sinclair-coefficient/" target="_blank" style="color:#9D00FF; text-decoration: underline;">
+                IWF Sinclair Coefficient page
+            </a>
+            under the "Documents" section.
+            Use these values for the most accurate calculations.
+        </div>
+        """
+    )
+    
     if sinclair_gender.value == "Male":
         a_coeff = mo.ui.number(0.722762521, label="Male 'A':", step=1e-9)
         b_coeff = mo.ui.number(193.609, label="Male 'B':", step=1e-3)
-        sinclair_coeff = mo.hstack([sinclair_gender, a_coeff, b_coeff])
+        sinclair_coeff = mo.vstack([sinclair_message, sinclair_info, mo.hstack([sinclair_gender, a_coeff, b_coeff])])
     else:
         a_coeff = mo.ui.number(0.787004341, label="Female 'A':", step=1e-9)
         b_coeff = mo.ui.number(153.757, label="Female 'B':", step=1e-3)
-        sinclair_coeff = mo.hstack([sinclair_gender, a_coeff, b_coeff])
+        sinclair_coeff =  mo.vstack([sinclair_message, sinclair_info, mo.hstack([sinclair_gender, a_coeff, b_coeff])])
 
     sinclair_coeff
     return a_coeff, b_coeff
 
 
 @app.cell
-def _(mo):
-    mo.md(r"""## 2. Provide your data""")
-    return
-
-
-@app.cell
-def _(mo):
-    csv_file = mo.ui.file(
-        filetypes=[".csv"], kind="button", label="Upload Local CSV File"
-    )
-
-    # Display the file uploader in the Marimo notebook
-    csv_file
-    return (csv_file,)
-
-
-@app.cell
-def _(a_coeff, b_coeff, csv_file):
-    import io
-    import math
+def __(mo, user_url, a_coeff, b_coeff):
+    """
+    This cell loads weightlifting data from a URL, cleans it, calculates
+    various performance metrics, and displays the results.
+    """
+    # 1. IMPORTS & SETUP
     import pandas as pd
+    import numpy as np
+    from io import StringIO
+    import warnings
+    import logging
 
-    # Function to load the uploaded file into a Pandas DataFrame
-    def load_csv_to_dataframe(file_data):
-        """Load an uploaded CSV file into a Pandas DataFrame.
+    logging.basicConfig(level=logging.INFO)
+    
+    # Define a variable to hold the final output
+    final_output = None
 
-        Parameters
-        ----------
-        file_data : marimo.ui.FileUIElement
-            The file UI element from Marimo, containing the uploaded CSV data.
-            It's expected that `file_data.value[0].contents` yields the
-            byte string of the CSV content.
-
-        Returns
-        -------
-        pd.DataFrame
-            A Pandas DataFrame created from the content of the uploaded CSV file.
+    # 2. DATA LOADING
+    def load_data(url: str) -> tuple[pd.DataFrame | None, str | None]:
         """
-        content_bytes = file_data.value[0].contents
-        content_string = io.StringIO(content_bytes.decode("utf-8"))
-        df = pd.read_csv(content_string)
+        Loads data from a URL, handling both standard and Pyodide environments.
+        Returns a tuple of (DataFrame, error_message).
+        """
+        if not url:
+            return None, "Please provide a data URL."
+        try:
+            from pyodide.http import open_url
+            csv_text = open_url(url).read()
+            df = pd.read_csv(StringIO(csv_text), parse_dates=["date"])
+        except ImportError:
+            try:
+                df = pd.read_csv(url, parse_dates=["date"])
+            except Exception as e:
+                logging.error(f"Pandas read_csv error: {e}")
+                return None, f"**Error loading data:** Could not read the file. (Details: {e})"
+        except Exception as e:
+            logging.error(f"Pyodide open_url error: {e}")
+            return None, f"**Error loading data in browser:** Could not fetch data. (Details: {e})"
+        
+        if "Unnamed: 0" in df.columns:
+            df = df.drop(columns=["Unnamed: 0"])
+        return df, None
+
+    # 3. CORE DATA PROCESSING & CALCULATION FUNCTIONS
+    def clean_and_prepare_data(df: pd.DataFrame) -> tuple[pd.DataFrame | None, str | None]:
+        user_data = df.copy()
+        user_data.columns = user_data.columns.str.strip().str.lower()
+
+        for col in user_data.select_dtypes(include=['object']).columns:
+            user_data[col] = user_data[col].str.lower()
+
+        required_cols = {"date", "lift_name", "weight_kg", "bodyweight_kg", "reps"}
+        if not required_cols.issubset(user_data.columns):
+            missing = required_cols - set(user_data.columns)
+            return None, f"**Missing Columns:** Your data is missing: `{missing}`."
+
+        user_data["date"] = pd.to_datetime(user_data["date"], errors="coerce").dt.date
+        user_data["weight_kg"] = pd.to_numeric(user_data["weight_kg"], errors="coerce").replace(0, np.nan)
+        user_data["bodyweight_kg"] = pd.to_numeric(user_data["bodyweight_kg"], errors="coerce").replace(0, np.nan)
+        user_data["reps"] = pd.to_numeric(user_data["reps"], errors="coerce").fillna(1).astype(int)
+        
+        user_data = user_data.sort_values(by="date").reset_index(drop=True)
+        return user_data, None
+
+    def calculate_sinclair(df: pd.DataFrame, coeff_a: float, coeff_b: float) -> pd.DataFrame:
+        df['sinclair_points'] = np.nan
+        mask = (df["lift_name"] == "total") & df["weight_kg"].notna() & df["bodyweight_kg"].notna() & (df["bodyweight_kg"] > 0)
+        bodyweight = df.loc[mask, "bodyweight_kg"]
+        total_weight = df.loc[mask, "weight_kg"]
+        sinclair_coeff = np.ones_like(bodyweight, dtype=float)
+        bw_ratio_mask = bodyweight <= coeff_b
+        ratio = bodyweight[bw_ratio_mask] / coeff_b
+        ratio = ratio[ratio > 0]
+        sinclair_coeff[bw_ratio_mask] = 10 ** (coeff_a * (np.log10(ratio)) ** 2)
+        df.loc[mask, "sinclair_points"] = (total_weight * sinclair_coeff).round(2)
+        return df
+    
+    def add_snatch_cj_spread(df: pd.DataFrame) -> pd.DataFrame:
+        try:
+            pivot_df = df[df["reps"] == 1].pivot_table(index="date", columns="lift_name", values="weight_kg")
+            if {"snatch", "clean & jerk"}.issubset(pivot_df.columns):
+                interpolated_df = pivot_df[["snatch", "clean & jerk"]].interpolate(method="linear", limit_direction="both")
+                interpolated_df["spread_pct"] = (
+                    (interpolated_df["clean & jerk"] - interpolated_df["snatch"]) / interpolated_df["snatch"]
+                ).replace([np.inf, -np.inf], np.nan) * 100
+                df = pd.merge(df, interpolated_df["spread_pct"].round(2).reset_index(), on="date", how="left")
+        except Exception as e:
+            warnings.warn(f"Could not calculate C&J spread: {e}")
         return df
 
-    def calculate_sinclair_points(
-        total_weight_lifted: float,
-        bodyweight: float,
-        coeff_a: float,
-        coeff_b: float,
-    ) -> float | None:
-        """Calculate Sinclair points for a weightlifting total.
-
-        The Sinclair coefficient is calculated based on bodyweight relative
-        to a coefficient 'B'. If bodyweight is greater than 'B', the
-        Sinclair coefficient is 1.0.
-
-        Parameters
-        ----------
-        total_weight_lifted : float
-            The total weight lifted by the athlete in kilograms.
-        bodyweight : float
-            The athlete's bodyweight in kilograms.
-        coeff_a : float
-            The 'A' coefficient for Sinclair calculation, specific to gender.
-        coeff_b : float
-            The 'B' coefficient (bodyweight cap) for Sinclair calculation.
-
-        Returns
-        -------
-        float or None
-            The calculated Sinclair points, rounded to two decimal places.
-            Returns None if `total_weight_lifted` or `bodyweight` is NaN,
-            or if `bodyweight` is non-positive, or if the ratio for log is non-positive.
-        """
-        if pd.isna(total_weight_lifted) or pd.isna(bodyweight) or bodyweight <= 0:
-            return None
-        if bodyweight <= coeff_b:
-            ratio = bodyweight / coeff_b
-            if ratio <= 0:
-                return None
-            sinclair_coefficient = 10 ** (coeff_a * (math.log10(ratio)) ** 2)
-        else:
-            sinclair_coefficient = 1.0
-        return round(total_weight_lifted * sinclair_coefficient, 2)
-
-    def add_snatch_cj_spread_pct(df: pd.DataFrame) -> pd.DataFrame:
-        """Add Clean & Jerk vs. Snatch spread percentage column.
-
-        Calculates the spread between Clean & Jerk and Snatch as a percentage
-        of Snatch weight. This is added as a 'spread_pct' column.
-        using linear interpolation for missing values on the same date.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            Input DataFrame with 'date', 'lift_name', and 'weight_kg' columns.
-            'date' will be converted to datetime objects.
-
-        Returns
-        -------
-        pd.DataFrame
-            DataFrame with an added 'spread_pct' column, rounded to the nearest integer.
-        """
-        df["date"] = pd.to_datetime(df["date"])
-        df = df.sort_values(by="date")
-        if "spread_pct" in df.columns:
-            df = df.drop(columns=["spread_pct"])
-
-        # Pivot the table to have Snatch and Clean & Jerk weights side by side
-        pivot_df = df.pivot_table(index="date", columns="lift_name", values="weight_kg")
-
-        # Interpolate missing values
-        interpolated_df = pivot_df.interpolate(method="linear")
-
-        # Calculate the spread as a percentage of Snatch
-        interpolated_df["spread_pct"] = round(
-            (
-                (interpolated_df["Clean & Jerk"] - interpolated_df["Snatch"])
-                / interpolated_df["Snatch"]
-            )
-            * 100
-        )
-
-        # Merge the spread back into the original DataFrame
-        merged_df = pd.merge(
-            df, interpolated_df["spread_pct"].reset_index(), on="date", how="left"
-        )
-
-        return merged_df
-
-    def add_cumulative_personal_best(df: pd.DataFrame) -> pd.DataFrame:
-        """Add cumulative personal best for each lift.
-
-        Calculates and adds a 'personal_best_kg' column, representing the
-        highest weight lifted for each 'lift_name' up to each recorded date.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            Input DataFrame with 'date', 'lift_name', and 'weight_kg' columns.
-
-        Returns
-        -------
-        pd.DataFrame
-            DataFrame with an added 'personal_best_kg' column.
-        """
-        df["date"] = pd.to_datetime(df["date"])
+    def add_cumulative_personal_bests(df: pd.DataFrame) -> pd.DataFrame:
         df = df.sort_values(by=["lift_name", "date"])
-
-        def calculate_pb(series):
-            return series.cummax()
-
-        df["personal_best_kg"] = df.groupby("lift_name")["weight_kg"].transform(
-            calculate_pb
-        )
-
+        df["personal_best_kg"] = df.groupby("lift_name")["weight_kg"].transform(lambda s: s.cummax())
         return df
 
     def add_lift_bodyweight_ratio(df: pd.DataFrame) -> pd.DataFrame:
-        """Add lift-to-bodyweight ratio column.
-
-        Calculates the ratio of 'weight_kg' to 'bodyweight_kg', expressed as a
-        percentage, and adds it as 'lift_bodyweight_ratio'.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            Input DataFrame with 'weight_kg' and 'bodyweight_kg' columns.
-
-        Returns
-        -------
-        pd.DataFrame
-            DataFrame with an added 'lift_bodyweight_ratio' column, rounded to the nearest integer.
-        """
-        df["lift_bodyweight_ratio"] = round(100 * df["weight_kg"] / df["bodyweight_kg"])
+        df["lift_bodyweight_ratio"] = np.nan
+        mask = (df["reps"] == 1) & df["weight_kg"].notna() & df["bodyweight_kg"].notna()
+        df.loc[mask, "lift_bodyweight_ratio"] = (100 * df.loc[mask, "weight_kg"] / df.loc[mask, "bodyweight_kg"]).round(2)
         return df
-
-    # Load the DataFrame whenever a file is uploaded
-    data_df = load_csv_to_dataframe(csv_file)
-    data_df["date"] = pd.to_datetime(data_df["date"]).dt.date
-    data_df["sinclair_points"] = data_df.apply(
-        lambda row: (
-            calculate_sinclair_points(
-                row["weight_kg"],
-                row["bodyweight_kg"],
-                a_coeff.value,
-                b_coeff.value,
-            )
-            if row["lift_name"] in ["Snatch", "Clean & Jerk"]
-            else None
-        ),
-        axis=1,
+    
+    data_message = mo.md(
+    """
+    <div style="
+        background: #fcfcfd;
+        border-left: 4px solid #9D00FF;
+        border-radius: 0.8rem;
+        padding: 1.2rem 1rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 12px rgba(157, 0, 255, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    ">
+        <span style="
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #9D00FF, #7D5FFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        ">Processed Weightlifting Data. It looks like we have some great data for you! </span>
+    </div>
+    """
     )
-    data_df = add_snatch_cj_spread_pct(data_df)
-    data_df = add_cumulative_personal_best(data_df)
-    data_df = add_lift_bodyweight_ratio(data_df)
-    data_df = data_df.reset_index(drop=True)
 
-    if "Unnamed: 0" in data_df.columns:
-        data_df = data_df.drop(columns=["Unnamed: 0"])
-    return data_df, pd
+    # 4. EXECUTION PIPELINE
+    data, error = load_data(user_url.value)
+
+    if error:
+        final_output = mo.md(error)
+    else:
+        user_data_df, clean_error = clean_and_prepare_data(data)
+        if clean_error:
+            final_output = mo.md(clean_error)
+        elif user_data_df is None or user_data_df.empty:
+            final_output = mo.md("**Processing Stopped:** No valid data after cleaning.")
+        else:
+            # All checks passed, proceed with processing
+            user_data_df = (
+                user_data_df
+                .pipe(calculate_sinclair, a_coeff.value, b_coeff.value)
+                .pipe(add_snatch_cj_spread)
+                .pipe(add_cumulative_personal_bests)
+                .pipe(add_lift_bodyweight_ratio)
+            )
+            
+            user_data_df = user_data_df.sort_values(by=["date", "lift_name"]).reset_index(drop=True)
+            # 5. DISPLAY OUTPUT
+            final_output = mo.vstack([
+                data_message,
+                mo.ui.table(user_data_df, pagination=True, page_size=10)
+            ])
+
+    # The last expression in a marimo cell is its output.
+    # By assigning either an error or the table to final_output,
+    # we ensure the cell always has a valid output without early returns.
+    final_output
+    
+    return user_data_df
+
+
 
 
 @app.cell
-def _():
-    EXPECTED_COLUMNS = {
-        "date": "object",
-        "lift_name": "object",
-        "weight_kg": "float64",
-        "bodyweight_kg": "float64",
-        "self_evaluated_shape": "int64",
-    }
-
-    REQUIRED_COLUMNS = ["date", "lift_name", "weight_kg", "bodyweight_kg"]
-    return
-
-
-@app.cell
-def _(data_df):
-    data_df.head(10)
-    return
-
-
-@app.cell
-def _(pd):
+def _(mo, user_data_df, pd):
     import plotly.express as px
     import plotly.graph_objects as go
+    import plotly.io as pio
+    # Custom color palette: blue, yellow, black
+    lift_colors = [
+        "#9D00FF",  # Vibrant Purple 
+        "#fa7d00",  # Bright Orange 
+        "#222222",  # Very Dark Grey 
+        "#0072B2",  # Dark Blue 
+        "#009E73",  # Teal/Green 
+        "#FC46AA",  # Rose/Pinkish-Purple 
+        "#FFF017",  # Greenish Yellow 
+        "#1CAAFC",  # Sky Blue 
+        "#B4773E",  # Mid Brown 
+        "#A3A3A3"   # Light Grey
+    ]
+    pio.templates["bws"] = go.layout.Template(
+        layout=go.Layout(
+            font=dict(family="Arial", size=16, color="#222"),
+            plot_bgcolor="#f5f7fa",
+            paper_bgcolor="#f5f7fa",
+            title=dict(font=dict(color="#9D00FF")),
+            legend=dict(bgcolor="#fff", bordercolor="#9D00FF", borderwidth=1),
+        )
+    )
+    pio.renderers.default = "iframe"
 
     def create_temporal_weight_chart(df: pd.DataFrame) -> go.Figure:
-        """Create a line chart of weight lifted over time.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            DataFrame containing the data to plot. Expected columns are
-            'date', 'weight_kg', and 'lift_name'.
-
-        Returns
-        -------
-        go.Figure
-            A Plotly graph object figure showing weight lifted over time,
-            colored by lift name.
-        """
-        fig = px.line(
-            df,
+        lifts_df = df[df["lift_name"].isin(["snatch", "clean & jerk"])]
+        fig_lifts = px.line(
+            lifts_df,
             x="date",
             y="weight_kg",
-            text="weight_kg",
+            #text="weight_kg",
             color="lift_name",
-            title="Weight Lifted Over Time (kg)",
-            labels={"weight_kg": "Weight (kg)", "lift_name": "Lift", "personal_best_kg": "Personal Best (kg)"},
+            title="Weight Lifted Over Time (snatch & Clean and Jerk)",
+            labels={"weight_kg": "Weight (kg)", "lift_name": "Lift"},
             markers=True,
-            template="plotly_white",
+            template="bws",
+            color_discrete_sequence=lift_colors,
         )
-        fig.update_traces(textposition="top center", textfont_size=14)
-
-        # Add personal best lines
-        if not df.empty and 'lift_name' in df.columns and 'personal_best_kg' in df.columns:
-            # Iterate through the traces already created by px.line for the main lift weights
-            # Each trace corresponds to a unique lift_name
-            processed_lifts = set() # To handle cases where px might duplicate for some reason (unlikely for color)
-            
-            # Iterate over a copy of fig.data list as we might be modifying the figure
-            for trace in list(fig.data): 
-                lift_name = trace.name
-                if lift_name in processed_lifts or lift_name is None:
-                    continue
-                
-                lift_color = trace.line.color
-
-                # Filter data for this specific lift to get PB data
-                # Ensure data is sorted by date for correct staircase plotting
-                lift_df = df[df["lift_name"] == lift_name].sort_values(by="date")
-
-                if not lift_df.empty:
-                    fig.add_trace(go.Scatter(
-                        x=lift_df["date"],
-                        y=lift_df["personal_best_kg"],
+        fig_lifts.update_traces(textposition="top center", textfont_size=14)
+        if not lifts_df.empty and 'lift_name' in lifts_df.columns and 'personal_best_kg' in lifts_df.columns:
+            for lift_name in lifts_df["lift_name"].unique():
+                lift_color = None
+                for trace in fig_lifts.data:
+                    if trace.name == lift_name:
+                        lift_color = trace.line.color
+                        break
+                lift_pb_df = lifts_df[lifts_df["lift_name"] == lift_name].sort_values(by="date")
+                if not lift_pb_df.empty:
+                    fig_lifts.add_trace(go.Scatter(
+                        x=lift_pb_df["date"],
+                        y=lift_pb_df["personal_best_kg"],
                         mode='lines',
-                        line=dict(color=lift_color, dash='dash', shape='hv', width=.75),
+                        line=dict(color=lift_color, dash='dash', shape='hv', width=1.25),
                         name=f'{lift_name} PB',
-                        legendgroup=lift_name, # Group PB with its main lift in legend
-                        showlegend=True 
+                        legendgroup=lift_name,
+                        showlegend=True
                     ))
-                    processed_lifts.add(lift_name)
-        return fig
+        total_df = df[df["lift_name"] == "total"]
+        fig_total = px.line(
+            total_df,
+            x="date",
+            y="weight_kg",
+            # text="weight_kg",
+            title="Total Weight Lifted Over Time",
+            labels={"weight_kg": "Total (kg)"},
+            markers=True,
+            template="bws",
+            color_discrete_sequence=["#9D00FF"],
+        )
+        fig_total.update_traces(textposition="top center", textfont_size=14)
+        if not total_df.empty and 'personal_best_kg' in total_df.columns:
+            fig_total.add_trace(go.Scatter(
+                x=total_df["date"],
+                y=total_df["personal_best_kg"],
+                mode='lines',
+                line=dict(color="#9D00FF", dash='dash', shape='hv', width=1.25),
+                name='Total PB',
+                legendgroup='total',
+                showlegend=True
+            ))
+        return fig_lifts, fig_total
 
     def create_temporal_sinclair_chart(df: pd.DataFrame) -> go.Figure:
-        """Create a line chart of Sinclair points over time.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            DataFrame containing the data to plot. Expected columns are
-            'date', 'sinclair_points', and 'lift_name'.
-
-        Returns
-        -------
-        go.Figure
-            A Plotly graph object figure showing Sinclair points over time,
-            colored by lift name.
-        """
-        return px.line(
-            df,
+        total_df = df[df["lift_name"] == "total"].sort_values(by="date")
+        fig = px.line(
+            total_df,
             x="date",
             y="sinclair_points",
-            color="lift_name",
-            title="Sinclair Points Over Time",
-            labels={"sinclair_points": "Sinclair Points", "lift_name": "Lift"},
+            # text="sinclair_points",
+            title="Sinclair Points Over Time (Total)",
+            labels={"sinclair_points": "Sinclair Points"},
             markers=True,
-            template="plotly_white",
+            template="bws",
+            color_discrete_sequence=["#9D00FF"],
         )
+        fig.update_traces(textposition="top center", textfont_size=14)
+        if not total_df.empty:
+            sinclair_pb = total_df["sinclair_points"].cummax()
+            fig.add_trace(go.Scatter(
+                x=total_df["date"],
+                y=sinclair_pb,
+                mode='lines',
+                line=dict(color='#9D00FF', dash='dash', shape='hv', width=1.25),
+                name='Sinclair PB',
+                legendgroup='sinclair',
+                showlegend=True
+            ))
+        return fig
 
     def create_snatch_cj_spread_chart(df: pd.DataFrame) -> go.Figure:
-        """Create a line chart of Clean & Jerk vs. Snatch spread over time.
-
-        The spread is shown as a percentage of Snatch weight.
-        This chart filters for 'Clean & Jerk' lift names as 'spread_pct'
-        is primarily associated with it.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            DataFrame containing the data. Expected columns: 'date', 'lift_name', 'spread_pct'.
-
-        Returns
-        -------
-        go.Figure
-            A Plotly graph object figure showing the C&J - Snatch spread percentage.
-        """
-        spread_df = df[df["lift_name"] == "Clean & Jerk"].dropna(subset=["spread_pct"])
+        spread_df = df[df["lift_name"] == "clean & jerk"].dropna(subset=["spread_pct"])
         return px.line(
             spread_df,
             x="date",
             y="spread_pct",
-            title="Clean & Jerk - Snatch Spread (% of Snatch) Over Time",
-            labels={"spread_pct": "Spread (% of Snatch)"},
+            title="clean & jerk - snatch Spread (% of snatch) Over Time",
+            labels={"spread_pct": "Spread (% of snatch)"},
             markers=True,
-            template="plotly_white",
+            template="bws",
+            color_discrete_sequence=lift_colors,
         )
 
     def create_lift_bodyweight_ratio_chart(df: pd.DataFrame) -> go.Figure:
-        """Create a line chart of lift to bodyweight ratio over time.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            DataFrame containing the data. Expected columns: 'date',
-            'lift_bodyweight_ratio', 'lift_name'.
-
-        Returns
-        -------
-        go.Figure
-            A Plotly graph object figure showing the lift/bodyweight ratio, colored by lift name.
-        """
         return px.line(
             df,
             x="date",
@@ -411,52 +554,11 @@ def _(pd):
                 "lift_name": "Lift",
             },
             markers=True,
-            template="plotly_white",
-        )
-
-    def create_self_evaluated_shape_chart(df: pd.DataFrame) -> go.Figure:
-        """Create a line chart of self-evaluated physical shape over time.
-
-        If multiple shape evaluations exist for the same date, their mean
-        is plotted. The Y-axis is fixed from 1 to 5.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            DataFrame containing the data. Expected columns: 'date', 'self_evaluated_shape'.
-
-        Returns
-        -------
-        go.Figure
-            A Plotly graph object figure showing self-evaluated shape over time.
-        """
-        shape_data = df.groupby("date")["self_evaluated_shape"].mean().reset_index()
-        return px.line(
-            shape_data,
-            x="date",
-            y="self_evaluated_shape",
-            title="Self-Evaluated Shape Over Time (1-5)",
-            labels={"self_evaluated_shape": "Shape Rating"},
-            markers=True,
-            template="plotly_white",
-            range_y=[1, 5],  # Ensure y-axis is fixed for shape rating
+            template="bws",
+            color_discrete_sequence=lift_colors,
         )
 
     def create_bodyweight_chart(df: pd.DataFrame) -> go.Figure:
-        """Create a line chart of bodyweight over time.
-
-        Duplicate bodyweight entries for the same date are removed before plotting.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            DataFrame containing the data. Expected columns: 'date', 'bodyweight_kg'.
-
-        Returns
-        -------
-        go.Figure
-            A Plotly graph object figure showing bodyweight over time.
-        """
         dum = df.copy()
         dum = dum[["date", "bodyweight_kg"]].drop_duplicates().sort_values(by="date")
         return px.line(
@@ -465,62 +567,48 @@ def _(pd):
             y="bodyweight_kg",
             title="Bodyweight Over Time",
             markers=True,
-            template="plotly_white",
+            template="bws",
+            color_discrete_sequence=lift_colors,
         )
 
-    return (
-        create_bodyweight_chart,
-        create_lift_bodyweight_ratio_chart,
-        create_self_evaluated_shape_chart,
-        create_snatch_cj_spread_chart,
-        create_temporal_sinclair_chart,
-        create_temporal_weight_chart,
-    )
 
-@app.cell
-def _(mo):
-    mo.md(
-        r"""
-    ## 3. Choose a chart to display
-    The chart will update automatically based on your selection.
+        # Unpack the two charts from create_temporal_weight_chart
+    fig_lifts, fig_total = create_temporal_weight_chart(user_data_df)
+    chart_map = {
+        "Temporal Evolution (Bodyweight)": create_bodyweight_chart(user_data_df),
+        "Temporal Evolution (Lift kg: snatch & C&J)": fig_lifts,
+        "Temporal Evolution (Lift kg: Total)": fig_total,
+        "Temporal Evolution (Sinclair)": create_temporal_sinclair_chart(user_data_df),
+        "C&J - snatch Spread": create_snatch_cj_spread_chart(user_data_df),
+        "Lift / Bodyweight Ratio": create_lift_bodyweight_ratio_chart(user_data_df),
+    }
+    
+    chart_message = mo.md(
+    """
+    <div style="
+        background: #fcfcfd;
+        border-left: 4px solid #9D00FF;
+        border-radius: 0.8rem;
+        padding: 1.2rem 1rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 12px rgba(157, 0, 255, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    ">
+        <span style="
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #9D00FF, #7D5FFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        ">All Your PR and Stats are here! </span>
+    </div>
     """
     )
-    return
-
-@app.cell
-def _(
-    create_bodyweight_chart,
-    create_lift_bodyweight_ratio_chart,
-    create_self_evaluated_shape_chart,
-    create_snatch_cj_spread_chart,
-    create_temporal_sinclair_chart,
-    create_temporal_weight_chart,
-    data_df,
-    mo,
-):
-    chart_dict = {
-        "Temporal Evolution (Bodyweight)": create_bodyweight_chart(data_df),
-        "Temporal Evolution (Lift kg)": create_temporal_weight_chart(data_df),
-        "Temporal Evolution (Sinclair)": create_temporal_sinclair_chart(data_df),
-        "C&J - Snatch Spread": create_snatch_cj_spread_chart(data_df),
-        "Lift / Bodyweight Ratio": create_lift_bodyweight_ratio_chart(data_df),
-        "Self-Evaluated Shape": create_self_evaluated_shape_chart(data_df),
-    }
-    chart_selector = mo.ui.dropdown(
-        options=chart_dict,
-        label="choose a chart",
-        searchable=True,
-    )
-    chart_selector
-    return chart_selector
-
-
-@app.cell
-def _(
-    chart_selector
-):
-    chart_selector.value
-    return
-
-if __name__ == "__main__":
-    app.run()
+    
+    mo.vstack([
+        chart_message,
+        # *[mo.md(f"### {title}") for title in chart_map.keys()],
+        *[chart for chart in chart_map.values()]
+    ])

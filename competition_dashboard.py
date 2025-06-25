@@ -13,79 +13,128 @@ def _():
 
 @app.cell
 def _(mo):
-    mo.md(
-        r"""
-    # Brussels Weightlifting School
-    ## Competion Dashboard
-    """
+    header = mo.md(
+        """
+        <div style="
+            text-align: center;
+            padding: 2em 1em;
+            margin-bottom: 2em;
+        ">
+            <p style="
+                font-size: 3em; /* Larger, impactful main title */
+                font-weight: 800; /* Strong but not extreme */
+                color: #fa7d00; /* Primary color */
+                margin-bottom: 0.2em;
+                letter-spacing: -0.02em; /* Slightly tighter for modern feel */
+            ">
+                Brussels Weightlifting School
+            </p>
+            <p style="
+                font-size: 1.6em; /* Clear, readable subtitle */
+                font-weight: 500;
+                color: #7f8c8d; /* Muted secondary color */
+                letter-spacing: 0.01em;
+            ">
+                Competition Dashboard
+            </p>
+        </div>
+        """
     )
+    header
     return
 
 
-# @app.cell
-# def _():
-#     import pandas as pd
-#     data = pd.read_csv(
-#         "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTy21622d_G-6bZw8-ugzG9RMbLvy_0h_eyhcVtcOYLcssPygig8pPnwAimXVcvntOD8X_JdCOWdd2/pub?output=csv"
-#     )
-#     members = data["member"].unique().tolist()
-#     return (data, members, pd,)
 
 @app.cell
 def _(mo):
-    csv_file = mo.ui.file(
-        filetypes=[".csv"], kind="button", label="Upload Local CSV File"
-    )
-
-    # Display the file uploader in the Marimo notebook
-    csv_file
-    return (csv_file,)
-
-@app.cell
-def _(csv_file):
-    import io
     import pandas as pd
+    # from pyodide.http import open_url  # Only available in Pyodide environments
+    from io import StringIO
+    
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTy21622d_G-6bZw8-ugzG9RMbLvy_0h_eyhcVtcOYLcssPygig8pPnwAimXVcvntOD8X_JdCOWdd2/pub?output=csv"
+    try:
+        # For WASM (Marimo export, in browser)
+        from pyodide.http import open_url
 
-    # Function to load the uploaded file into a Pandas DataFrame
-    def load_csv_to_dataframe(file_data):
-        """Load an uploaded CSV file into a Pandas DataFrame.
-
-        Parameters
-        ----------
-        file_data : marimo.ui.FileUIElement
-            The file UI element from Marimo, containing the uploaded CSV data.
-            It's expected that `file_data.value[0].contents` yields the
-            byte string of the CSV content.
-
-        Returns
-        -------
-        pd.DataFrame
-            A Pandas DataFrame created from the content of the uploaded CSV file.
-        """
-        content_bytes = file_data.value[0].contents
-        content_string = io.StringIO(content_bytes.decode("utf-8"))
-        df = pd.read_csv(content_string)
-        return df
-    data = load_csv_to_dataframe(csv_file)
+        csv_text = open_url(url).read()
+        data = pd.read_csv(StringIO(csv_text))
+    except ImportError:
+        # For local Python execution (Jupyter, VSCode, etc.)
+        data = pd.read_csv(url, parse_dates=["date"])
+    
     members = data["member"].unique().tolist()
     return (data, members, pd,)
 
 
 @app.cell
 def _(mo, members):
-    member = mo.ui.dropdown(
-        options=members, label="Identify yourself", searchable=True
+    # 1. Create the mo.ui.dropdown object FIRST
+    member_selector = mo.ui.dropdown(
+        options=members,
+        label="",       # No label—cleaner look
+        searchable=True,
+        value="Anna" if "Anna" in members else members[0],  # Default to the first member
     )
-    mo.vstack([
-        mo.md("**Hey, you! What's your name?** 👋"),
-        member
-    ])
-    return (member,)
     
+    # 2. Then, apply the styling to a *displayable variable*
+    #    This is what you'll put into your mo.md or other display functions
+    styled_member_dropdown = member_selector.style({
+        "border": "1px solid #9D00FF",
+        "border-radius": "5px",
+        "padding": "0.5em 1em",
+        "font-size": "1em",
+        "box-shadow": "0 2px 8px rgba(0, 0, 0, 0.05)",
+        "color": "#333",
+        "background-color": "#ffffff",
+        "transition": "all 0.2s ease-in-out",
+    })
+
     
+    user_message = mo.md(
+        """
+        ### Select a Member:
+
+        """
+    )
+
+    # Create a styled container using custom HTML + CSS
+    banner = mo.md(
+        """
+        <div style="
+            background: #fcfcfd;
+            border-left: 4px solid #9D00FF;
+            border-radius: 0.8rem;
+            padding: 1.2rem 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 12px rgba(157, 0, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        ">
+            <span style="
+                font-size: 1.3rem;
+                font-weight: 700;
+                background: linear-gradient(90deg, #9D00FF, #7D5FFF);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            ">👤 Hey, you! What's your name? 👋 </span>
+            <span style="color: #555; font-size: 1rem;">
+                Choose your name from the list below to get started.
+            </span>
+        </div>
+        """
+    )
+
+    # Stack the banner and dropdown neatly
+    mo.vstack([banner, user_message, styled_member_dropdown])
+
+    return (member_selector,)
+
+
 @app.cell
-def _(mo, pd, data, member):
-    member_name = member.value
+def _(mo, pd, data, member_selector):
+    import numpy as np
+    member_name = member_selector.value
 
     def get_member_data(data, member):
         member_data = data[data["member"] == member].copy()
@@ -99,7 +148,7 @@ def _(mo, pd, data, member):
             var_name="lift_name",
             value_name="weight_kg"
         )
-        member_data["weight_kg"] = member_data["weight_kg"].astype(float).fillna(0)
+        member_data["weight_kg"] = member_data["weight_kg"].replace(0, np.nan)
         member_data["sinclair_points"] = round(member_data["weight_kg"] * member_data["sinclair_coef_2021"])
         member_data = member_data.sort_values(by=["date", "sinclair_points"]).reset_index(drop=True)
         return member_data
@@ -160,31 +209,39 @@ def _(pd):
     import plotly.express as px
     import plotly.graph_objects as go
     import plotly.io as pio
+    # Custom color palette: blue, yellow, black
+    club_colors = ["#9D00FF", "#fa7d00", "#222222"]
+    pio.templates["bws"] = go.layout.Template(
+        layout=go.Layout(
+            font=dict(family="Arial", size=16, color="#222"),
+            plot_bgcolor="#f5f7fa",
+            paper_bgcolor="#f5f7fa",
+            title=dict(font=dict(color="#9D00FF")),
+            legend=dict(bgcolor="#fff", bordercolor="#9D00FF", borderwidth=1),
+        )
+    )
     pio.renderers.default = "iframe"
 
     def create_temporal_weight_chart(df: pd.DataFrame) -> go.Figure:
-        """Create two line charts: one for snatch & clean_and_jerk, one for total."""
         import plotly.express as px
         import plotly.graph_objects as go
-        # Chart 1: snatch and clean_and_jerk
         lifts_df = df[df["lift_name"].isin(["snatch", "clean_and_jerk"])]
         fig_lifts = px.line(
             lifts_df,
             x="date",
             y="weight_kg",
-            text="weight_kg",
+            #text="weight_kg",
             color="lift_name",
             title="Weight Lifted Over Time (Snatch & Clean and Jerk)",
             labels={"weight_kg": "Weight (kg)", "lift_name": "Lift"},
             markers=True,
-            template="plotly_white",
+            template="bws",
+            color_discrete_sequence=club_colors,
         )
         fig_lifts.update_traces(textposition="top center", textfont_size=14)
-        # Add personal best stepwise dashed lines for each lift
         if not lifts_df.empty and 'lift_name' in lifts_df.columns and 'personal_best_kg' in lifts_df.columns:
             for lift_name in lifts_df["lift_name"].unique():
                 lift_color = None
-                # Find the color for this lift from the traces
                 for trace in fig_lifts.data:
                     if trace.name == lift_name:
                         lift_color = trace.line.color
@@ -200,26 +257,25 @@ def _(pd):
                         legendgroup=lift_name,
                         showlegend=True
                     ))
-        # Chart 2: total
         total_df = df[df["lift_name"] == "total"]
         fig_total = px.line(
             total_df,
             x="date",
             y="weight_kg",
-            text="weight_kg",
+            # text="weight_kg",
             title="Total Weight Lifted Over Time",
             labels={"weight_kg": "Total (kg)"},
             markers=True,
-            template="plotly_white",
+            template="bws",
+            color_discrete_sequence=["#9D00FF"],
         )
         fig_total.update_traces(textposition="top center", textfont_size=14)
-        # Add personal best stepwise dashed line for total
         if not total_df.empty and 'personal_best_kg' in total_df.columns:
             fig_total.add_trace(go.Scatter(
                 x=total_df["date"],
                 y=total_df["personal_best_kg"],
                 mode='lines',
-                line=dict(color='black', dash='dash', shape='hv', width=1.25),
+                line=dict(color="#9D00FF", dash='dash', shape='hv', width=1.25),
                 name='Total PB',
                 legendgroup='total',
                 showlegend=True
@@ -227,43 +283,28 @@ def _(pd):
         return fig_lifts, fig_total
 
     def create_temporal_sinclair_chart(df: pd.DataFrame) -> go.Figure:
-        """Create a line chart of Sinclair points over time.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            DataFrame containing the data to plot. Expected columns are
-            'date', 'sinclair_points', and 'lift_name'.
-
-        Returns
-        -------
-        go.Figure
-            A Plotly graph object figure showing Sinclair points over time,
-            colored by lift name.
-        """
         import plotly.express as px
         import plotly.graph_objects as go
-        # Only use total
         total_df = df[df["lift_name"] == "total"].sort_values(by="date")
         fig = px.line(
             total_df,
             x="date",
             y="sinclair_points",
-            text="sinclair_points",
+            # text="sinclair_points",
             title="Sinclair Points Over Time (Total)",
             labels={"sinclair_points": "Sinclair Points"},
             markers=True,
-            template="plotly_white",
+            template="bws",
+            color_discrete_sequence=["#9D00FF"],
         )
         fig.update_traces(textposition="top center", textfont_size=14)
-        # Add stepwise dashed line for Sinclair PB (rolling max)
         if not total_df.empty:
             sinclair_pb = total_df["sinclair_points"].cummax()
             fig.add_trace(go.Scatter(
                 x=total_df["date"],
                 y=sinclair_pb,
                 mode='lines',
-                line=dict(color='black', dash='dash', shape='hv', width=1.25),
+                line=dict(color='#9D00FF', dash='dash', shape='hv', width=1.25),
                 name='Sinclair PB',
                 legendgroup='sinclair',
                 showlegend=True
@@ -271,22 +312,6 @@ def _(pd):
         return fig
 
     def create_snatch_cj_spread_chart(df: pd.DataFrame) -> go.Figure:
-        """Create a line chart of clean_and_jerk vs. snatch spread over time.
-
-        The spread is shown as a percentage of snatch weight.
-        This chart filters for 'clean_and_jerk' lift names as 'spread_pct'
-        is primarily associated with it.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            DataFrame containing the data. Expected columns: 'date', 'lift_name', 'spread_pct'.
-
-        Returns
-        -------
-        go.Figure
-            A Plotly graph object figure showing the C&J - snatch spread percentage.
-        """
         spread_df = df[df["lift_name"] == "clean_and_jerk"].dropna(subset=["spread_pct"])
         return px.line(
             spread_df,
@@ -295,23 +320,11 @@ def _(pd):
             title="Clean & Jerk - Snatch Spread (% of snatch) Over Time",
             labels={"spread_pct": "Spread (% of snatch)"},
             markers=True,
-            template="plotly_white",
+            template="bws",
+            color_discrete_sequence=["#fa7d00"],
         )
 
     def create_lift_bodyweight_ratio_chart(df: pd.DataFrame) -> go.Figure:
-        """Create a line chart of lift to bodyweight ratio over time.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            DataFrame containing the data. Expected columns: 'date',
-            'lift_bodyweight_ratio', 'lift_name'.
-
-        Returns
-        -------
-        go.Figure
-            A Plotly graph object figure showing the lift/bodyweight ratio, colored by lift name.
-        """
         return px.line(
             df,
             x="date",
@@ -323,24 +336,11 @@ def _(pd):
                 "lift_name": "Lift",
             },
             markers=True,
-            template="plotly_white",
+            template="bws",
+            color_discrete_sequence=club_colors,
         )
 
     def create_bodyweight_chart(df: pd.DataFrame) -> go.Figure:
-        """Create a line chart of bodyweight over time.
-
-        Duplicate bodyweight entries for the same date are removed before plotting.
-
-        Parameters
-        ----------
-        df : pd.DataFrame
-            DataFrame containing the data. Expected columns: 'date', 'bodyweight_kg'.
-
-        Returns
-        -------
-        go.Figure
-            A Plotly graph object figure showing bodyweight over time.
-        """
         dum = df.copy()
         dum = dum[["date", "bodyweight_kg"]].drop_duplicates().sort_values(by="date")
         return px.line(
@@ -349,7 +349,8 @@ def _(pd):
             y="bodyweight_kg",
             title="Bodyweight Over Time",
             markers=True,
-            template="plotly_white",
+            template="bws",
+            color_discrete_sequence=["#222222"],
         )
 
     return (
@@ -359,6 +360,7 @@ def _(pd):
         create_temporal_sinclair_chart,
         create_temporal_weight_chart,
     )
+
 
 @app.cell
 def _(mo,
