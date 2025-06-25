@@ -1,38 +1,43 @@
 # Olympic Weightlifting Statistics Dashboard
 
-This dashboard provides a way to visualize and analyze your Olympic weightlifting training data. It calculates Sinclair points, tracks personal bests, shows lift-to-bodyweight ratios, and more.
+Welcome! This dashboard helps you visualize and analyze your Olympic weightlifting training and competition data. Track your progress, compare lifts, and see your Sinclair points—all in one place.
 
-## How to Use
 
-To use this dashboard, follow these steps:
+## 🚀 Quick Start
 
-### 1. Configure Sinclair Coefficients
+### 1. Choose Sinclair Gender & Coefficients
 
-Before uploading your data, you need to set up the coefficients used for calculating Sinclair points. Sinclair points are a way to compare lifters across different bodyweight categories.
+- At the top, select **Sinclair Gender**: "Male" or "Female".
+- Standard Sinclair coefficients (A & B) will appear. You can adjust them if needed (e.g., for the latest IWF tables).
 
-* **Select Sinclair Gender**: At the top of the dashboard, you will find a dropdown menu labeled "Sinclair Gender". You **must** select either "Male" or "Female" from this menu. This choice determines the standard Sinclair 'A' and 'B' coefficients used in the calculation.
-* **Adjust Coefficients (Optional)**: After selecting a gender, the corresponding 'A' and 'B' coefficients will be displayed in input fields. These are pre-filled with standard values. However, if you need to use different coefficients (for example, to match the very latest official IWF - International Weightlifting Federation - tables, or for a custom calculation), you can manually change the numbers in these fields.
+### 2. Prepare Your Training Data (CSV)
 
-### 2. Prepare Your Data CSV File
+> 📋 **How to Start Tracking Your Lifts**
+>
+> 1.  **Copy the Template:**
+>     [Open this Google Sheets template](https://docs.google.com/spreadsheets/d/1sOvuFj0_LtxaDD6gCrLZJSfJ0HYku9xLoonkTIPCFIc/edit?gid=1543506157#gid=1543506157) and go to **File → Make a copy** to save it to your own Google Drive.
+> 2.  **Enter Your Data:**
+>     Fill in your training data (date, lift\_name, weight\_kg, bodyweight\_kg, reps, etc.).
+> 3.  **Publish as CSV:**
+>     In your copy, go to **File → Share → Publish to web**.\<br\>
+>     Choose the sheet, select **Comma-separated values (.csv)**, click **Publish**, and copy the generated link.
+> 4.  **Paste the URL:**
+>     Paste your published CSV URL below. The dashboard will load and visualize your data automatically\!
+>
+> **Tip:** Update your sheet anytime—just refresh the dashboard to see your latest results.
 
-The dashboard expects your training data to be in a CSV (Comma Separated Values) file format. You need to ensure your CSV file has the correct columns and data types.
 
-**Required Columns:**
+Your Google Sheet file **must** have these columns:
 
-The following columns **must** be present in your CSV file:
+| Column                | Example         | Description                                  |
+|-----------------------|----------------|----------------------------------------------|
+| `date`                | 2023-10-27     | Date of the lift (YYYY-MM-DD)                |
+| `lift_name`           | Snatch         | Name of the lift (e.g., Snatch, Clean & Jerk)|
+| `weight_kg`           | 105.5          | Weight lifted (kg)                           |
+| `bodyweight_kg`       | 77.2           | Your bodyweight on that day (kg)             |
+| `self_evaluated_shape`| 4              | How you felt (1=bad, 5=great)                |
 
-| Column Name            | Data Type        | Description                                                                 | Example         |
-| ---------------------- | ---------------- | --------------------------------------------------------------------------- | --------------- |
-| `date`                 | Text (YYYY-MM-DD) | The date of the training session or lift.                                   | `2023-10-27`    |
-| `lift_name`            | Text             | The name of the lift. Common examples: "Snatch", "Clean & Jerk", "Front Squat" | `Snatch`        |
-| `weight_kg`            | Number           | The weight lifted in kilograms.                                             | `105.5`         |
-| `bodyweight_kg`        | Number           | Your bodyweight in kilograms on the day of the lift.                        | `77.2`          |
-| `self_evaluated_shape` | Integer (1-5)    | A rating from 1 to 5 of how you felt during the session (1=bad, 5=great). | `4`             |
-
-**Example CSV Data:**
-
-Here's what a few rows of your CSV file might look like:
-
+**Sample Data:**
 ```csv
 date,lift_name,weight_kg,bodyweight_kg,self_evaluated_shape
 2023-01-15,Snatch,90,75.5,3
@@ -42,73 +47,39 @@ date,lift_name,weight_kg,bodyweight_kg,self_evaluated_shape
 2023-01-19,Front Squat,150,76.0,5
 ```
 
-**Important Notes for Data Preparation:**
+**Tips:**
+- Column names must match exactly.
+- Dates: `YYYY-MM-DD`.
+- Use `.` for decimals (e.g., `75.5`).
 
-* Ensure the column names in your CSV file exactly match those listed above (e.g., `lift_name`, not `Lift Name`).
-* The date format should be Year-Month-Day (YYYY-MM-DD).
-* Use a period (`.`) as the decimal separator for `weight_kg` and `bodyweight_kg` if you have fractional values.
+## 🏆 Competition Dashboard
 
-### 3. Upload Your CSV File
+Track and compare competition results for all club members using a shared Google Sheet.
 
-Once you have:
+### How It Works
 
-1. Selected the Sinclair Gender and (if necessary) adjusted the A and B coefficients, and
-2. Prepared your training data in a CSV file according to the template above,
+- Open the **Competition Dashboard** (via Marimo app or web).
+- Data loads automatically from the club’s Google Sheet—no upload needed.
+- Explore charts and tables for all athletes: Sinclair points, bests, and more.
+- Filter by athlete, lift, or competition.
 
-you are ready to generate your statistics.
+### Adding Competition Results
 
-Click on the **"Upload Local CSV File"** button in the dashboard. A file dialog will open, allowing you to select the CSV file you prepared.
+1. **Open the shared Google Sheet** (ask your admin for the link if needed).
+2. **Add your results** as a new row. Follow the sheet’s format—don’t change columns or headers.
+3. **Use correct formats:**
+   - Dates: `YYYY-MM-DD`
+   - Decimals: use `.`
+4. **Don’t overwrite others’ data.** Double-check your entries.
 
-After you select and upload the file, the dashboard will automatically process the data and display various charts and statistics, including:
+Your updates appear in the dashboard automatically.
 
-* Temporal evolution of your bodyweight.
-* Temporal evolution of the weight you lifted (in kg).
-* Temporal evolution of your Sinclair points for Snatch and Clean & Jerk.
-* The spread between your Clean & Jerk and Snatch percentages.
-* Your lift-to-bodyweight ratio over time.
-* Your self-evaluated shape over time.
+## 💡 Need Help?
 
-Et voilà:
+- For feature requests or bugs, open an issue on GitHub.
 
-![](./dashboard.png)
+Enjoy tracking your progress!
 
-Enjoy analyzing your progress!
+![Competition Dashboard Examle](competition_dashboard.png)
 
----
-
-## Competition Dashboard: How to Use and Contribute Data
-
-The **Competition Dashboard** provides a way to visualize and analyze competition results for all club members, using data from a shared Google Sheet. This dashboard is separate from your personal training dashboard and is designed for tracking official or mock meet results across multiple athletes.
-
-### How to Use the Competition Dashboard
-
-1. **Access the Dashboard:**
-   * Open the `competition_dashboard` (either via the Marimo app, or the published GitHub Pages site).
-   * The dashboard automatically loads data from the published Google Sheet. You do not need to upload a file.
-
-2. **Explore the Visualizations:**
-   * The dashboard displays charts and tables summarizing competition results, Sinclair points, personal bests, and more for all athletes listed in the sheet.
-   * You can filter or select athletes, lifts, or competitions as provided by the dashboard controls.
-
-3. **Stay Updated:**
-   * The dashboard will refresh its data each time it is loaded, reflecting any new results added to the Google Sheet.
-
-### How to Add Data to the Published Google Sheet
-
-To contribute new competition results for yourself or other club members:
-
-1. **Open the Google Sheet:**
-   * Use the link provided by your club or dashboard admin to access the shared Google Sheet. (If you do not have access, request it from the admin.)
-
-2. **Follow the Required Format:**
-   * Each row should represent a single athlete's result in a single competition. Use the format defined in the Google Sheet. Don't change the default.
-3. **Best Practices:**
-   * **Do not change column names** or reorder columns unless instructed by the admin.
-   * **Use the correct date format** (YYYY-MM-DD).
-   * **Use a period (`.`) as the decimal separator** for all weights.
-   * **Double-check your entries** for typos, especially names and numbers.
-   * **Do not delete or overwrite other athletes' data.**
-   * If you are unsure about a value, leave the cell blank or add a comment.
-
-4. **Save and Close:**
-   * Your changes are saved automatically in Google Sheets. The dashboard will reflect your updates the next time it is loaded.
+![Dashboard Examle](dashboard.png)
