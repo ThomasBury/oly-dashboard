@@ -350,7 +350,7 @@ def _(pd):
             title="Bodyweight Over Time",
             markers=True,
             template="bws",
-            color_discrete_sequence=["#222222"],
+            color_discrete_sequence=club_colors,
         )
 
     return (
