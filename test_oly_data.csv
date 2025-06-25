@@ -1,9 +1,37 @@
-,date,lift_name,weight_kg,bodyweight_kg,self_evaluated_shape,context
-1,2024-01-15,Clean & Jerk,100,75,4,training
-3,2024-02-20,Clean & Jerk,105,76,5,competition
-5,2024-03-10,Clean & Jerk,102.5,76.5,3,competition
-7,2024-04-05,Clean & Jerk,107,77,4,competition
-0,2024-01-15,Snatch,80,75,4,training
-2,2024-02-20,Snatch,85,76,5,competition
-4,2024-03-10,Snatch,82.5,76.5,3,competition
-6,2024-04-05,Snatch,87,77,4,competition
+date,lift_name,weight_kg,bodyweight_kg,self_evaluated_shape,reps
+2024-01-15,Back Squat,120.0,75.0,4,5
+2024-01-15,Clean & Jerk,100.0,75.0,4,1
+2024-01-15,Front Squat,100.0,75.0,4,5
+2024-01-15,Snatch,80.0,75.0,4,1
+2024-01-15,Snatch Pull,90.0,75.0,4,3
+2024-01-15,Total,180.0,75.0,4,1
+2024-02-20,Back Squat,125.0,76.0,5,5
+2024-02-20,Clean & Jerk,105.0,76.0,5,1
+2024-02-20,Front Squat,105.0,76.0,5,5
+2024-02-20,Snatch,85.0,76.0,5,1
+2024-02-20,Snatch Pull,95.0,76.0,5,3
+2024-02-20,Total,190.0,76.0,5,1
+2024-03-10,Back Squat,120.0,76.5,3,5
+2024-03-10,Clean & Jerk,102.5,76.5,3,1
+2024-03-10,Front Squat,100.0,76.5,3,5
+2024-03-10,Snatch,82.5,76.5,3,1
+2024-03-10,Snatch Pull,90.0,76.5,3,3
+2024-03-10,Total,185.0,76.5,3,1
+2024-04-05,Back Squat,130.0,77.0,4,5
+2024-04-05,Clean & Jerk,107.0,77.0,4,1
+2024-04-05,Front Squat,110.0,77.0,4,5
+2024-04-05,Snatch,87.0,77.0,4,1
+2024-04-05,Snatch Pull,100.0,77.0,4,3
+2024-04-05,Total,194.0,77.0,4,1
+2024-05-01,Back Squat,132.0,77.5,5,5
+2024-05-01,Clean & Jerk,108.0,77.5,5,1
+2024-05-01,Front Squat,112.0,77.5,5,5
+2024-05-01,Snatch,88.0,77.5,5,1
+2024-05-01,Snatch Pull,102.0,77.5,5,3
+2024-05-01,Total,196.0,77.5,5,1
+2024-06-01,Back Squat,135.0,78.0,4,5
+2024-06-01,Clean & Jerk,109.0,78.0,4,1
+2024-06-01,Front Squat,115.0,78.0,4,5
+2024-06-01,Snatch,89.0,78.0,4,1
+2024-06-01,Snatch Pull,105.0,78.0,4,3
+2024-06-01,Total,198.0,78.0,4,1
