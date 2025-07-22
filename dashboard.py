@@ -428,7 +428,7 @@ def _(mo, user_data_df, pd):
         "#0072B2",  # Dark Blue 
         "#009E73",  # Teal/Green 
         "#FC46AA",  # Rose/Pinkish-Purple 
-        "#FFF017",  # Greenish Yellow 
+        "#E7CC34",  # Yellow 
         "#1CAAFC",  # Sky Blue 
         "#B4773E",  # Mid Brown 
         "#A3A3A3"   # Light Grey
@@ -500,7 +500,41 @@ def _(mo, user_data_df, pd):
                 legendgroup='total',
                 showlegend=True
             ))
-        return fig_lifts, fig_total
+
+        # 'Other' lifts (not snatch, clean & jerk, or total)
+        others_df = df[~df["lift_name"].isin(["snatch", "clean & jerk", "total"])]
+        fig_others = px.line(
+            others_df,
+            x="date",
+            y="weight_kg",
+            #text="weight_kg",
+            color="lift_name",
+            title="Weight Lifted Over Time (Other Lifts)",
+            labels={"weight_kg": "Weight (kg)", "lift_name": "Lift"},
+            markers=True,
+            template="bws",
+            color_discrete_sequence=lift_colors,
+        )
+        fig_others.update_traces(textposition="top center", textfont_size=14)
+        if not others_df.empty and 'lift_name' in others_df.columns and 'personal_best_kg' in others_df.columns:
+            for lift_name in others_df["lift_name"].unique():
+                lift_color = None
+                for trace in fig_others.data:
+                    if trace.name == lift_name:
+                        lift_color = trace.line.color
+                        break
+                lift_pb_df = others_df[others_df["lift_name"] == lift_name].sort_values(by="date")
+                if not lift_pb_df.empty:
+                    fig_others.add_trace(go.Scatter(
+                        x=lift_pb_df["date"],
+                        y=lift_pb_df["personal_best_kg"],
+                        mode='lines',
+                        line=dict(color=lift_color, dash='dash', shape='hv', width=1.25),
+                        name=f'{lift_name} PB',
+                        legendgroup=lift_name,
+                        showlegend=True
+                    ))
+        return fig_lifts, fig_total, fig_others
 
     def create_temporal_sinclair_chart(df: pd.DataFrame) -> go.Figure:
         total_df = df[df["lift_name"] == "total"].sort_values(by="date")
@@ -572,11 +606,12 @@ def _(mo, user_data_df, pd):
         )
 
 
-        # Unpack the two charts from create_temporal_weight_chart
-    fig_lifts, fig_total = create_temporal_weight_chart(user_data_df)
+        # Unpack the three charts from create_temporal_weight_chart
+    fig_lifts, fig_total, fig_others = create_temporal_weight_chart(user_data_df)
     chart_map = {
         "Temporal Evolution (Bodyweight)": create_bodyweight_chart(user_data_df),
         "Temporal Evolution (Lift kg: snatch & C&J)": fig_lifts,
+        "Temporal Evolution (Lift kg: others)": fig_others,
         "Temporal Evolution (Lift kg: Total)": fig_total,
         "Temporal Evolution (Sinclair)": create_temporal_sinclair_chart(user_data_df),
         "C&J - snatch Spread": create_snatch_cj_spread_chart(user_data_df),
