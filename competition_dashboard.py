@@ -13,26 +13,37 @@ def _():
 
 @app.cell
 def _(mo):
+    # Set logo path and size (adjust as needed)
+    logo_path = "bws_log_tr_bkg.png"  # Ensure this file is in the same directory or adjust the path
+    logo_width = "120px"  # Change this value to customize logo size
+
     header = mo.md(
-        """
+        f"""
         <div style="
             text-align: center;
-            padding: 2em 1em;
+            padding: 2em 1em 1em 1em;
             margin-bottom: 2em;
         ">
+            <img src='{logo_path}' alt="BWS Logo" style="
+                width: {logo_width};
+                max-width: 30vw;
+                height: auto;
+                display: block;
+                margin: 0 auto 1em auto;
+            "/>
             <p style="
-                font-size: 3em; /* Larger, impactful main title */
-                font-weight: 800; /* Strong but not extreme */
-                color: #fa7d00; /* Primary color */
+                font-size: 3em;
+                font-weight: 800;
+                color: #fa7d00;
                 margin-bottom: 0.2em;
-                letter-spacing: -0.02em; /* Slightly tighter for modern feel */
+                letter-spacing: -0.02em;
             ">
                 Brussels Weightlifting School
             </p>
             <p style="
-                font-size: 1.6em; /* Clear, readable subtitle */
+                font-size: 1.6em;
                 font-weight: 500;
-                color: #7f8c8d; /* Muted secondary color */
+                color: #7f8c8d;
                 letter-spacing: 0.01em;
             ">
                 Competition Dashboard
