@@ -13,55 +13,48 @@ def _():
 
 @app.cell
 def _(mo):
-    import base64
-    from pathlib import Path
-
-    logo_path = Path("./public/bws_logo.png")
     logo_width = "240px"
-
-    print("Logo exists:", logo_path.is_file())  # Debug print
-
-    logo_src = ""
-    if logo_path.is_file():
-        with open(logo_path, "rb") as f:
-            logo_b64 = base64.b64encode(f.read()).decode("utf-8")
-        logo_src = f"data:image/png;base64,{logo_b64}"
-    else:
-        # Show a fallback or warning
-        logo_src = ""
-
-    header = mo.md(
-        f"""
-        <div style="
-                background: #490296;
-                text-align: center;
-                padding: 2em 1em 1em 1em;
-                margin-bottom: 2em;
-                border-radius: 1.2em;
+    header = mo.md(f"""
+    <div style="
+            background: #490296;
+            text-align: center;
+            padding: 2em 1em 1em 1em;
+            margin-bottom: 2em;
+            border-radius: 1.2em;
+    ">
+        <img
+            src="public/bws_logo.png"
+            alt="BWS Logo"
+            style="
+                width: {logo_width};
+                max-width: 30vw;
+                height: auto;
+                display: block;
+                margin: 0 auto 1em auto;
+            "
+        />
+        <p style="
+            font-size: 3em;
+            font-weight: 800;
+            color: #eb441c;
+            margin-bottom: 0.2em;
+            letter-spacing: -0.02em;
         ">
-            {'<img src="'+logo_src+'" alt="BWS Logo" style="width: '+logo_width+';max-width:30vw;height:auto;display:block;margin:0 auto 1em auto;"/>' if logo_src else '<span style="color:red;">Logo not found</span>'}
-            <p style="
-                font-size: 3em;
-                font-weight: 800;
-                color: #eb441c;
-                margin-bottom: 0.2em;
-                letter-spacing: -0.02em;
-            ">
-                Brussels Weightlifting School
-            </p>
-            <p style="
-                font-size: 1.6em;
-                font-weight: 500;
-                color: #ffffff;
-                letter-spacing: 0.01em;
-            ">
-                🏆 Competition Dashboard 🏅
-            </p>
-        </div>
-        """
-    )
+            Brussels Weightlifting School
+        </p>
+        <p style="
+            font-size: 1.6em;
+            font-weight: 500;
+            color: #ffffff;
+            letter-spacing: 0.01em;
+        ">
+            🏆 Competition Dashboard 🏅
+        </p>
+    </div>
+    """)
     header
     return
+
 
 
 @app.cell
