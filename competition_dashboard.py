@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.13.11-dev14"
+__generated_with = "0.13.15"
 app = marimo.App(width="medium")
 
 
@@ -13,28 +13,37 @@ def _():
 
 @app.cell
 def _(mo):
-    # Set logo path and size (adjust as needed)
-    logo_path = "bws_log_tr_bkg.png"  # Ensure this file is in the same directory or adjust the path
-    logo_width = "120px"  # Change this value to customize logo size
+    import base64
+    from pathlib import Path
+
+    logo_path = Path("./bws_log_tr_bkg.png")
+    logo_width = "240px"
+
+    print("Logo exists:", logo_path.is_file())  # Debug print
+
+    logo_src = ""
+    if logo_path.is_file():
+        with open(logo_path, "rb") as f:
+            logo_b64 = base64.b64encode(f.read()).decode("utf-8")
+        logo_src = f"data:image/png;base64,{logo_b64}"
+    else:
+        # Show a fallback or warning
+        logo_src = ""
 
     header = mo.md(
         f"""
         <div style="
-            text-align: center;
-            padding: 2em 1em 1em 1em;
-            margin-bottom: 2em;
+                background: #490296;
+                text-align: center;
+                padding: 2em 1em 1em 1em;
+                margin-bottom: 2em;
+                border-radius: 1.2em;
         ">
-            <img src='{logo_path}' alt="BWS Logo" style="
-                width: {logo_width};
-                max-width: 30vw;
-                height: auto;
-                display: block;
-                margin: 0 auto 1em auto;
-            "/>
+            {'<img src="'+logo_src+'" alt="BWS Logo" style="width: '+logo_width+';max-width:30vw;height:auto;display:block;margin:0 auto 1em auto;"/>' if logo_src else '<span style="color:red;">Logo not found</span>'}
             <p style="
                 font-size: 3em;
                 font-weight: 800;
-                color: #fa7d00;
+                color: #eb441c;
                 margin-bottom: 0.2em;
                 letter-spacing: -0.02em;
             ">
@@ -43,10 +52,10 @@ def _(mo):
             <p style="
                 font-size: 1.6em;
                 font-weight: 500;
-                color: #7f8c8d;
+                color: #ffffff;
                 letter-spacing: 0.01em;
             ">
-                Competition Dashboard
+                🏆 Competition Dashboard 🏅
             </p>
         </div>
         """
@@ -55,13 +64,12 @@ def _(mo):
     return
 
 
-
 @app.cell
-def _(mo):
+def _():
     import pandas as pd
     # from pyodide.http import open_url  # Only available in Pyodide environments
     from io import StringIO
-    
+
     url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTy21622d_G-6bZw8-ugzG9RMbLvy_0h_eyhcVtcOYLcssPygig8pPnwAimXVcvntOD8X_JdCOWdd2/pub?output=csv"
     try:
         # For WASM (Marimo export, in browser)
@@ -72,13 +80,13 @@ def _(mo):
     except ImportError:
         # For local Python execution (Jupyter, VSCode, etc.)
         data = pd.read_csv(url, parse_dates=["date"])
-    
+
     members = data["member"].unique().tolist()
-    return (data, members, pd,)
+    return data, members, pd
 
 
 @app.cell
-def _(mo, members):
+def _(members, mo):
     # 1. Create the mo.ui.dropdown object FIRST
     member_selector = mo.ui.dropdown(
         options=members,
@@ -86,7 +94,7 @@ def _(mo, members):
         searchable=True,
         value="Anna" if "Anna" in members else members[0],  # Default to the first member
     )
-    
+
     # 2. Then, apply the styling to a *displayable variable*
     #    This is what you'll put into your mo.md or other display functions
     styled_member_dropdown = member_selector.style({
@@ -100,7 +108,7 @@ def _(mo, members):
         "transition": "all 0.2s ease-in-out",
     })
 
-    
+
     user_message = mo.md(
         """
         ### Select a Member:
@@ -143,7 +151,7 @@ def _(mo, members):
 
 
 @app.cell
-def _(mo, pd, data, member_selector):
+def _(data, member_selector, mo, pd):
     import numpy as np
     member_name = member_selector.value
 
@@ -170,7 +178,8 @@ def _(mo, pd, data, member_selector):
         mo.md(f"Welcome, **{member_name}**!"),
         member_data_df  # This will display the DataFrame as a table
     ])
-    return (member_data_df, member_name, pd)
+    return (member_data_df,)
+
 
 @app.cell
 def _(member_data_df, pd):
@@ -209,10 +218,10 @@ def _(member_data_df, pd):
     data_df = data_df.reset_index(drop=True)
     if "Unnamed: 0" in data_df.columns:
         data_df = data_df.drop(columns=["Unnamed: 0"])
-        
-        
-    
-    return data_df, pd
+
+
+
+    return (data_df,)
 
 
 @app.cell
@@ -221,7 +230,7 @@ def _(pd):
     import plotly.graph_objects as go
     import plotly.io as pio
     # Custom color palette: blue, yellow, black
-    club_colors = ["#9D00FF", "#fa7d00", "#222222"]
+    club_colors = ["#9D00FF", "#eb441c", "#222222"]
     pio.templates["bws"] = go.layout.Template(
         layout=go.Layout(
             font=dict(family="Arial", size=16, color="#222"),
@@ -332,7 +341,7 @@ def _(pd):
             labels={"spread_pct": "Spread (% of snatch)"},
             markers=True,
             template="bws",
-            color_discrete_sequence=["#fa7d00"],
+            color_discrete_sequence=["#eb441c"],
         )
 
     def create_lift_bodyweight_ratio_chart(df: pd.DataFrame) -> go.Figure:
@@ -374,13 +383,14 @@ def _(pd):
 
 
 @app.cell
-def _(mo,
+def _(
     create_bodyweight_chart,
     create_lift_bodyweight_ratio_chart,
     create_snatch_cj_spread_chart,
     create_temporal_sinclair_chart,
     create_temporal_weight_chart,
-    data_df
+    data_df,
+    mo,
 ):
     # Unpack the two charts from create_temporal_weight_chart
     fig_lifts, fig_total = create_temporal_weight_chart(data_df)
@@ -398,6 +408,7 @@ def _(mo,
         *[chart for chart in chart_map.values()]
     ])
     return
+
 
 if __name__ == "__main__":
     app.run()
