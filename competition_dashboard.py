@@ -16,7 +16,7 @@ def _(mo):
     import base64
     from pathlib import Path
 
-    logo_path = Path("./bws_logo.png")
+    logo_path = Path("./public/bws_logo.png")
     logo_width = "240px"
 
     print("Logo exists:", logo_path.is_file())  # Debug print
